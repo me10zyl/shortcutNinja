@@ -1,0 +1,31 @@
+extends layout/default
+
+block content
+    .dojo_title 训练场
+    .dojos
+        each dojo in dojos
+            .dojo(data-id=dojo.dojo_id)
+                a(href='/dojo?id=' + dojo.dojo_id) #{dojo.dojo_name}
+                a(href='/dojo/new?id=' + dojo.dojo_id, class='dojo_edit') 编辑
+                a(href='javscript:void(0)' class='delete') 删除
+    .new_dojo
+        a.new_dojo_btn(href='/dojo/new')
+            button 创建新的Dojo
+
+block scripts
+    script(src="js/index.js")
+    script.
+        $(function(){
+            $(".delete").click(function(){
+                var r=confirm("真的删除吗")
+                var self = $(this)
+                if(r){
+                    $.post("/dojo/delete", {
+                        id : self.closest('.dojo').data('id')
+                    }).then(function(data){
+                        alert('删除成功')
+                        location.reload()
+                    })
+                }
+            })
+        });

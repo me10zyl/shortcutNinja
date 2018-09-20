@@ -1,0 +1,19 @@
+{
+  "name": "com.github.me10zyl.shortcutninja",
+  "version": "1.0.0",
+  "description": "to be a shortcut ninja",
+  "main": "index.js",
+  "dependencies": {
+    "ejs": "^2.6.1",
+    "express": "^4.16.3",
+    "hotkeys-js": "^3.3.8",
+    "pug": "^2.0.3",
+    "sqlite3": "^4.0.2"
+  },
+  "devDependencies": {},
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "author": "me10zyl@qq.com",
+  "license": "ISC"
+}

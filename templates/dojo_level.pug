@@ -1,0 +1,167 @@
+extends layout/default
+block head
+    link(href='/css/dojo_level.css' rel='stylesheet')
+
+block content
+    .back
+        a(href='/dojo?id=' + id)
+            = '<<返回训练场'
+    .container
+        .dojo_hint
+            .options_hint 提示(#{dojo.os})
+            ul
+                if dojo.os == 'macos'
+                    li ⌃ - Control
+                    li ⌘ - Command
+                    li ⎇ - Alt
+                    li ⇧ - Shift
+                else
+                    li &nbsp;&nbsp;&nbsp;&nbsp;Ctrl
+                    li &nbsp;&nbsp;&nbsp;&nbsp;Windows
+                    li &nbsp;&nbsp;&nbsp;&nbsp;Alt
+                    li &nbsp;&nbsp;&nbsp;&nbsp;Shift
+        .dojo_container
+            .level_title
+                h1 #{dojo_level.level_name}
+            .dojo_panel
+                .shortcut_title
+                .shortcut_input
+                    .shortcut_cursor
+                    .shortcut_text
+                #res1.shortcut_result.none
+                    .shortcut_error_key ⌃E
+                    .shortcut_desc 打开最近的文件
+                    .shortcut_correct_key ⌘E
+                #res2.shortcut_result.none
+                    .shortcut_error_key ⌃E
+                    .shortcut_desc 打开最近的文件
+                    .shortcut_correct_key ⌘E
+        .dojo_start
+            a(href='javascript:void(0)' id='start')
+                button 开始
+        .clear
+
+
+block scripts
+    script.
+        $(function () {
+            var shortcuts = !{JSON.stringify(dojo_shortcuts)}
+            var os = "!{dojo.os}"
+            var step = 0;
+
+            $.prototype.bounce = function(){
+                this.hide()
+                this.slideDown()
+            }
+
+
+            function cursor() {
+                var $shortcutCursor = $(".shortcut_cursor");
+                if ($shortcutCursor.hasClass('hidden')) {
+                    $shortcutCursor.removeClass('hidden')
+                } else {
+                    $shortcutCursor.addClass('hidden')
+                }
+            }
+
+            var it;
+
+            function show(dojo_sc) {
+                $(".shortcut_title").text(dojo_sc.shortcut_desc)
+                $(".shortcut_text").text("");
+                it = setInterval(cursor, 700);
+            }
+
+            function next(answer) {
+                check_answer(answer);
+                if (step < shortcuts.length - 1) {
+                    step++;
+                    show(shortcuts[step])
+                }else{
+                    step = 0;
+                    show(shortcuts[step])
+                }
+            }
+
+            function check_answer(error_key) {
+                var sc = shortcuts[step];
+                //res1 可见
+                if($("#res1:visible").length > 0){
+                    $("#res2").children().remove();
+                    $("#res1").children().clone().appendTo("#res2");
+                    $("#res2").show();
+                }
+                $("#res1 .shortcut_error_key").text(error_key)
+                $("#res1 .shortcut_correct_key").text(sc.shortcut_key)
+                $("#res1 .shortcut_desc").text(sc.shortcut_desc)
+                $("#res1 .shortcut_error_key").removeClass("correct").removeClass("error")
+                if (sc.shortcut_key == error_key) {
+                    $("#res1 .shortcut_error_key").addClass("correct")
+                } else {
+                    $("#res1 .shortcut_error_key").addClass("error")
+                }
+                $("#res1").bounce();
+            }
+
+
+            show(shortcuts[step])
+            var CTRL_KEY = '⌃';
+            var META_KEY = '⌘';
+            var ALT_KEY = '⎇';
+            var SHIFT_KEY = '⇧';
+            var SPLITER = '';
+
+            function change_os(os) {
+                if (os == 'macos') {
+                    CTRL_KEY = '⌃';
+                    META_KEY = '⌘';
+                    ALT_KEY = '⎇';
+                    SHIFT_KEY = '⇧';
+                    SPLITER = ''
+                } else {
+                    CTRL_KEY = 'Ctrl'
+                    META_KEY = 'Windows'
+                    ALT_KEY = 'Alt'
+                    SHIFT_KEY = 'Shift'
+                    SPLITER = '+'
+                }
+            }
+
+            change_os(os);
+
+
+            $(document).keydown(function (e) {
+                e.preventDefault()
+                var keys = ""
+                if (e.ctrlKey) {
+                    keys += SPLITER + CTRL_KEY;
+                }
+                if (e.altKey) {
+                    keys += SPLITER + ALT_KEY;
+                }
+                if (e.shiftKey) {
+                    keys += SPLITER + SHIFT_KEY;
+                }
+                if (e.metaKey) {
+                    keys += SPLITER + META_KEY;
+                }
+                var code = e.originalEvent.code;
+                console.log(e)
+                if (/^Key/.test(code)) {
+                    var real_key = code.substring(3)
+                    keys += SPLITER + real_key.toUpperCase()
+                    keys = keys.substring(keys.indexOf(SPLITER) + SPLITER.length)
+                    $('.shortcut_input .shortcut_text').text(keys)
+                    clearInterval(it)
+                    $(".shortcut_cursor").addClass('hidden')
+                }
+            }).keyup(function (e) {
+                var answer = $('.shortcut_input .shortcut_text').text()
+                if (!(answer == '' || answer == CTRL_KEY || answer == META_KEY || answer == ALT_KEY || answer == SHIFT_KEY)) {
+                    console.log(answer)
+                    next(answer)
+                }
+            })
+
+        });
+

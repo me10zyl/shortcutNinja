@@ -1,0 +1,13 @@
+extends layout/default
+block head
+    link(href='/css/dojo.css' rel='stylesheet')
+
+block content
+    .dojo_name #{dojo.dojo_name}
+    .levels
+        each item in dojo.dojo_levels
+            .level
+                | Lv.#{item.level_value}
+                a(href='/dojo_level?id=' + id + '&level=' + item.level_value) #{item.level_name}
+    .back
+        a(href='/') << 返回
