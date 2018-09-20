@@ -10,6 +10,7 @@ app.use(express.urlencoded()); // to support URL-encoded bodies
 
 BASE_DIR = __dirname + "/templates"
 
+
 var Ret = function () {
     this.message = "成功";
     this.success = true;
@@ -54,7 +55,6 @@ app.get('/dojo', function (req, res) {
     if (req.query && req.query.id) {
         var id = req.query.id
         sqlhelper.get("select * from dojos where id = ?", [id], function (err, row) {
-            console.log(row)
             var dojo = JSON.parse(row.data);
             res.render(path('dojo'), {
                 dojo: dojo,
@@ -69,7 +69,6 @@ app.get('/dojo_level', function (req, res) {
         var id = req.query.id
         var level = req.query.level;
         sqlhelper.get("select * from dojos where id = ?", [id], function (err, row) {
-            console.log(row)
             var dojo = JSON.parse(row.data);
             var dojo_level = new Dojo_level();
             for( var i in dojo.dojo_levels){
@@ -99,7 +98,7 @@ app.get('/dojo/new', function (req, res) {
     if (req.query && req.query.id) {
         var id = req.query.id
         sqlhelper.get("select * from dojos where id = ?", [id], function (err, row) {
-            console.log(row)
+
             var dojo = JSON.parse(row.data);
             res.render(path('dojo_new'), {
                 dojo: dojo,
@@ -134,7 +133,7 @@ app.post('/dojo/new', function (req, res) {
 
 app.post('/dojo/delete', function (req, res) {
     var id = req.body.id
-    console.log(id)
+
     if(id) {
         sqlhelper.run("delete from dojos where id = ?", [id])
     }
@@ -145,7 +144,6 @@ var server = app.listen(8081, function () {
 
     var host = server.address().address
     var port = server.address().port
-
     console.log(new Date() + " 应用实例，访问地址为 http://%s:%s", host, port)
 
 })

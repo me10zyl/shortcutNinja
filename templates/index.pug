@@ -1,4 +1,6 @@
 extends layout/default
+block head
+    link(href='/css/index.css' rel='stylesheet')
 
 block content
     .dojo_title 训练场
@@ -13,7 +15,6 @@ block content
             button 创建新的Dojo
 
 block scripts
-    script(src="js/index.js")
     script.
         $(function(){
             $(".delete").click(function(){

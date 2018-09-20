@@ -31,7 +31,7 @@ block content
         each item, index in dojo.dojo_shortcuts
             .dojo_shortcut
                 | 快捷键：
-                input(type="text" name="shortcut_key")&attributes({value: item.shortcut_key})
+                input(type="text" name="shortcut_key" class='shortcut_key')&attributes({value: item.shortcut_key})
                 | 描述：
                 input(type="text" name="shortcut_desc")&attributes({value: item.shortcut_desc})
                 | 关卡：
@@ -64,70 +64,25 @@ block scripts
             });
         }
         $(function () {
-            var CTRL_KEY = 'Ctrl';
-            var META_KEY = 'Windows';
-            var ALT_KEY = 'Alt';
-            var SHIFT_KEY = 'Shift';
-            var SPLITER = '+';
             var os = '#{dojo.os}';
-
-            function change_os(os){
-                if (os == 'macos') {
-                    CTRL_KEY = '⌃';
-                    META_KEY = '⌘';
-                    ALT_KEY = '⎇';
-                    SHIFT_KEY = '⇧';
-                    SPLITER = ''
-                }else{
-                    CTRL_KEY = 'Ctrl'
-                    META_KEY = 'Windows'
-                    ALT_KEY = 'Alt'
-                    SHIFT_KEY = 'Shift'
-                    SPLITER = '+'
-                }
-                $(".keys").text(CTRL_KEY + ' ' + ALT_KEY + ' ' + SHIFT_KEY + ' ' + META_KEY)
-            }
-
-            change_os(os);
-
-            $("[name=os]").change(function(){
-                change_os($(this).val());
-            })
-
-            var KEYS = [CTRL_KEY, META_KEY, ALT_KEY, SHIFT_KEY]
-
-            function rebind() {
-                $("[name=shortcut_key]").keydown(function (e) {
-                    e.preventDefault()
-                    var self = $(this)
-                    var keys = ""
-                    if (e.ctrlKey) {
-                        keys += SPLITER + CTRL_KEY;
-                    }
-                    if (e.altKey) {
-                        keys += SPLITER + ALT_KEY;
-                    }
-                    if (e.shiftKey) {
-                        keys += SPLITER + SHIFT_KEY;
-                    }
-                    if (e.metaKey) {
-                        keys += SPLITER + META_KEY;
-                    }
-                    var code = e.originalEvent.code;
-                    console.log(e)
-                    if (/^Key/.test(code)) {
-                        var real_key = code.substring(3)
-                        keys += SPLITER + real_key.toUpperCase()
-                        keys = keys.substring(keys.indexOf(SPLITER) + SPLITER.length)
-                        self.val(keys)
-                    }
-
+            function cos(os){
+                change_os(os, function () {
+                    $(".keys").text(CTRL_KEY + ' ' + ALT_KEY + ' ' + SHIFT_KEY + ' ' + META_KEY)
                 });
             }
 
-            rebind();
+            cos();
+            $("[name=os]").change(function(){
+                cos($(this).val());
+            });
 
-            //$(".dojo_shortcut [name='shortcut_key']")[0].onkeydown = KeyPress;
+            $("[name='shortcut_key']").focus(function(e){
+                $(this).blur()
+            })
+
+            $(document).bindkeys(function(keys){
+
+            })
 
             var dojo_shortcut = $($('.dojo_shortcut')[$('.dojo_shortcut').length - 1]).clone();
             var dojo_level = $($(".dojo_level")[$(".dojo_level").length - 1]).clone();
@@ -162,7 +117,7 @@ block scripts
                 var data = {
                     dojo_id: $("[name=id]").val(),
                     dojo_name: $("[name=dojo_name]").val(),
-                    os : $("[name=os]").val(),
+                    os: $("[name=os]").val(),
                     dojo_shortcuts: [],
                     dojo_levels: []
                 }
@@ -187,4 +142,4 @@ block scripts
                     }
                 });
             })
-        });
+        })
