@@ -77,15 +77,9 @@ app.get('/dojo_level', function (req, res) {
                     break;
                 }
             }
-            var dojo_level_shortcuts = []
-            for(var i in dojo.dojo_shortcuts){
-                if(dojo.dojo_shortcuts[i].level_value == level){
-                    dojo_level_shortcuts.push(dojo.dojo_shortcuts[i])
-                }
-            }
             res.render(path('dojo_level'), {
                 dojo_level: dojo_level,
-                dojo_shortcuts: dojo_level_shortcuts,
+                dojo_shortcuts: dojo_level.dojo_shortcuts,
                 dojo : dojo,
                 id : row.id
             })
@@ -110,6 +104,7 @@ app.get('/dojo/new', function (req, res) {
         var dojo = new Dojo();
         var sc = new Dojo_shortcut();
         var sl = new Dojo_level();
+        sl.level_value = 1
         dojo.os = 'windows'
         dojo.dojo_shortcuts.push(sc)
         dojo.dojo_levels.push(sl)

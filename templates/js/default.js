@@ -25,7 +25,6 @@ function change_os(os, callback) {
 
 $.prototype.bindkeys = function(callback){
     this.keydown(function(e) {
-        console.log(ALT_KEY)
         var keys = ""
         if (e.ctrlKey) {
             keys += SPLITER + CTRL_KEY;

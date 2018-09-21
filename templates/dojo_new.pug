@@ -13,11 +13,11 @@ block content
     hr
     .dojo_levels
         each item, index in dojo.dojo_levels
-            .dojo_level
+            fieldset.dojo_level(data-dojo_level=JSON.stringify(item))
+                legend 等级#{item.level_value}
                 | 关卡名称:
                 input(type="text" name="level_name")&attributes({value: item.level_name})
-                | 关卡等级：
-                input(type="text" name="level_value")&attributes({value: item.level_value})
+                input(type="hidden" name="level_value")&attributes({value: item.level_value})
                 |
                 if index == (dojo.dojo_levels.length - 1)
                     a(class="add_level" href="#")
@@ -25,23 +25,23 @@ block content
                 else
                     a(class="remove_level" href="#")
                         button 删除等级
-    hr
-    p.keys ⌃ ⌘ ⎇ ⇧
-    .dojo_shortcuts
-        each item, index in dojo.dojo_shortcuts
-            .dojo_shortcut
-                | 快捷键：
-                input(type="text" name="shortcut_key" class='shortcut_key')&attributes({value: item.shortcut_key})
-                | 描述：
-                input(type="text" name="shortcut_desc")&attributes({value: item.shortcut_desc})
-                | 关卡：
-                input(type="text" name="level_value")&attributes({value: item.level_value})
-                if index == (dojo.dojo_shortcuts.length - 1)
-                    a(class="add_shortcut" href="#")
-                        button 添加快捷键
-                else
-                    a(class="remove_shortcut" href="#")
-                        button 删除快捷键
+                p.keys ⌃ ⌘ ⎇ ⇧
+                    .dojo_shortcuts
+                        each item_sc, index in item.dojo_shortcuts
+                            .dojo_shortcut
+                                | 快捷键：
+                                input(type="text" name="shortcut_key" class='shortcut_key')&attributes({value: item_sc.shortcut_key})
+                                | 描述：
+                                input(type="text" name="shortcut_desc")&attributes({value: item_sc.shortcut_desc})
+                                input(type="hidden" name="level_value")&attributes({value: item_sc.level_value})
+                                if index == (item.dojo_shortcuts.length - 1)
+                                    a(class="remove_shortcut" href="#")
+                                        button 删除快捷键
+                                    a(class="add_shortcut" href="#")
+                                        button 添加快捷键
+                                else
+                                    a(class="remove_shortcut" href="#")
+                                        button 删除快捷键
 
     a(href='javascript:void(0)' id='save')
         button 保存
@@ -55,7 +55,7 @@ block scripts
         function assemble(jQElement, callback) {
             $(jQElement).each(function () {
                 var data = {}
-                $(this).find("[name]").each(function () {
+                $(this).children("[name]").each(function () {
                     var name = $(this).attr("name");
                     var val = $(this).val();
                     if (val) {
@@ -65,7 +65,20 @@ block scripts
                 callback.call(this, data)
             });
         }
+
+        function init(){
+            $.prototype.dojo_level = function(){
+                return $(this).data("dojo_level")
+            }
+        }
+
         $(function () {
+
+            init();
+
+            var dojo_shortcut = $($('.dojo_shortcut')[$('.dojo_shortcut').length - 1]).clone();
+            var dojo_level = $($(".dojo_level")[$(".dojo_level").length - 1]).clone();
+
             var os = '#{dojo.os}';
 
             function cos(os){
@@ -80,8 +93,8 @@ block scripts
             });
 
             var focus_input = null;
-            function rebind() {
-                $("[name='shortcut_key']").focus(function (e) {
+            function rebind(context) {
+                $("[name='shortcut_key']").unbind("focus").focus(function (e) {
                     $(this).blur()
                     $("#dialog p").text("请按键...")
                     $("#dialog").dialog({
@@ -90,6 +103,30 @@ block scripts
                     })
                     focus_input = $(this)
                 })
+                $(".remove_shortcut").unbind("click").click(function () {
+                    var scs = $(this).closest(".dojo_shortcuts");
+                    if(scs.find(".remove_shortcut").length == 1){
+                        alert('最后一个不能删除')
+                        return;
+                    }
+                    $(this).closest(".dojo_shortcut").remove();
+                    rebind(scs);
+                });
+                $(".add_shortcut").unbind("click").click(function () {
+                    var scs = $(this).closest(".dojo_shortcuts");
+                    scs.find(".add_shortcut").remove();
+                    dojo_shortcut.clone().appendTo(scs)
+                    rebind(scs);
+                });
+                if(context) {
+                    var $last_sc = context.find(".dojo_shortcut:last");
+                    $last_sc.find(".add_shortcut,.remove_shortcut").remove()
+                    var clone = dojo_shortcut.find(".remove_shortcut,.add_shortcut").clone();
+                    clone.each(function () {
+                        $last_sc.append($(this))
+                    })
+                    rebind();
+                }
             }
 
             rebind();
@@ -103,33 +140,44 @@ block scripts
                 focus_input = null;
             })
 
-            var dojo_shortcut = $($('.dojo_shortcut')[$('.dojo_shortcut').length - 1]).clone();
-            var dojo_level = $($(".dojo_level")[$(".dojo_level").length - 1]).clone();
+            var Dojo_levels = {
+                get_all : function(){
+                    return $(".dojo_levels .dojo_level")
+                },
+                recalc : function(){
+                    var i = 0;
+                    this.get_all().find("legend").each(function(){
+                        console.log(i)
+                        $(this).text('等级' + (i + 1)).closest("fieldset").find("[name=level_value]").val(i + 1)
+                        i++;
+                    })
+
+                }
+            }
+
+
+
             dojo_shortcut.find('[name]').val('');
             dojo_level.find('[name]').val('')
-            $(".remove_shortcut").click(function () {
-                $(this).closest(".dojo_shortcut").remove();
-            });
+
             $(".remove_level").click(function () {
                 $(this).closest(".dojo_level").remove();
-            });
-            $(".add_shortcut").click(function () {
-                (function doIt() {
-                    $(".dojo_shortcuts .add_shortcut").addClass('remove_shortcut').removeClass('add_shortcut')
-                        .unbind().click(function () {
-                        $(this).closest(".dojo_shortcut").remove();
-                    }).find('button').text('删除快捷键');
-                    dojo_shortcut.clone().appendTo(".dojo_shortcuts").find('.add_shortcut').click(doIt);
-                    rebind();
-                })()
+                Dojo_levels.recalc();
             });
             $(".add_level").click(function () {
                 (function doIt() {
                     $(".dojo_levels .add_level").addClass('remove_level').removeClass('add_level')
                         .unbind().click(function () {
                         $(this).closest(".dojo_level").remove();
+                        Dojo_levels.recalc();
                     }).find('button').text('删除等级');
-                    dojo_level.clone().appendTo(".dojo_levels").find('.add_level').click(doIt);
+                    var $clone = dojo_level.clone()
+                    $clone.find('.add_level').click(doIt);
+                    var level_number = parseInt($(".dojo_level:last legend").text().match(/\d+$/)[0]);
+                    $clone.find("legend").text('等级' + (level_number + 1)).closest("fieldset").
+                    find("[name=level_value]").val(level_number + 1)
+                    $clone.appendTo(".dojo_levels").data("dojo_level");
+                    Dojo_levels.recalc();
                 })()
             });
             $("#save").click(function () {
@@ -137,14 +185,14 @@ block scripts
                     dojo_id: $("[name=id]").val(),
                     dojo_name: $("[name=dojo_name]").val(),
                     os: $("[name=os]").val(),
-                    dojo_shortcuts: [],
                     dojo_levels: []
                 }
-                assemble(".dojo_shortcut", function (d) {
-                    data.dojo_shortcuts.push(d)
-                });
 
                 assemble(".dojo_level", function (d) {
+                    d.dojo_shortcuts = []
+                    assemble($(this).find(".dojo_shortcut"), function (dd) {
+                        d.dojo_shortcuts.push(dd)
+                    });
                     data.dojo_levels.push(d)
                 });
 
