@@ -27,9 +27,9 @@ block content
                 .shortcut_title
                 .shortcut_input
                     .shortcut_cursor
-                    .shortcut_text
+                    .shortcut_text ⌃LEFTBRACKET
                 #res1.shortcut_result.none
-                    .shortcut_error_key ⌃E
+                    .shortcut_error_key ⌃SPACES
                     .shortcut_desc 打开最近的文件
                     .shortcut_correct_key ⌘E
                 #res2.shortcut_result.none
@@ -108,7 +108,19 @@ block scripts
 
             change_os(os);
 
+            $(document).bindkeys(function(keys){
+                $('.shortcut_input .shortcut_text').text(keys)
+                clearInterval(it)
+                $(".shortcut_cursor").addClass('hidden')
+            }).keyup(function (e) {
+                var answer = $('.shortcut_input .shortcut_text').text()
+                if (!(answer == '' || answer == CTRL_KEY || answer == META_KEY || answer == ALT_KEY || answer == SHIFT_KEY)) {
+                    console.log(answer)
+                    next(answer)
+                }
+            })
 
+        /*
             $(document).keydown(function (e) {
                 e.preventDefault()
                 var keys = ""
@@ -130,17 +142,9 @@ block scripts
                     var real_key = code.substring(3)
                     keys += SPLITER + real_key.toUpperCase()
                     keys = keys.substring(keys.indexOf(SPLITER) + SPLITER.length)
-                    $('.shortcut_input .shortcut_text').text(keys)
-                    clearInterval(it)
-                    $(".shortcut_cursor").addClass('hidden')
+
                 }
-            }).keyup(function (e) {
-                var answer = $('.shortcut_input .shortcut_text').text()
-                if (!(answer == '' || answer == CTRL_KEY || answer == META_KEY || answer == ALT_KEY || answer == SHIFT_KEY)) {
-                    console.log(answer)
-                    next(answer)
-                }
-            })
+            })*/
 
         });
 

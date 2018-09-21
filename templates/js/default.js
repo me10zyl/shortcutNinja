@@ -18,12 +18,14 @@ function change_os(os, callback) {
         SHIFT_KEY = 'Shift'
         SPLITER = '+'
     }
-    callback.call(this)
+    if(callback) {
+        callback.call(this)
+    }
 }
 
 $.prototype.bindkeys = function(callback){
     this.keydown(function(e) {
-        e.preventDefault();
+        console.log(ALT_KEY)
         var keys = ""
         if (e.ctrlKey) {
             keys += SPLITER + CTRL_KEY;
@@ -39,8 +41,11 @@ $.prototype.bindkeys = function(callback){
         }
         var code = e.originalEvent.code;
         var key = e.key;
-        if (!(key == 'Meta' || key == 'Control' || key == 'Shift' || key == 'Alternate')) {
-            var real_key = code.substring(3)
+        if (!(key == 'Meta' || key == 'Control' || key == 'Shift' || key == 'Alt')) {
+            var real_key = code;
+            if(/^Key/.test(code)){
+                real_key = key;
+            }
             keys += SPLITER + real_key.toUpperCase()
             keys = keys.substring(keys.indexOf(SPLITER) + SPLITER.length)
             callback.call(this, keys)
