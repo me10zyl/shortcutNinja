@@ -4,9 +4,7 @@
   "description": "to be a shortcut ninja",
   "main": "index.js",
   "dependencies": {
-    "ejs": "^2.6.1",
     "express": "^4.16.3",
-    "hotkeys-js": "^3.3.8",
     "pug": "^2.0.3",
     "sqlite3": "^4.0.2"
   },
