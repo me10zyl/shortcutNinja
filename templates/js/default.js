@@ -54,10 +54,13 @@ $.prototype.bindkeys = function(callback){
             switch(real_key){
                 case 'SLASH':
                     real_key = '/';
+                    break;
                 case 'Enter':
                     real_key = ENTER_KEY;
+                    break;
                 case 'Backspace':
                     real_key = BACKSPACE_KEY;
+                    break;
             }
             keys += SPLITER + real_key;
             keys = keys.substring(keys.indexOf(SPLITER) + SPLITER.length)
