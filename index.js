@@ -31,6 +31,7 @@ var Dojo_shortcut = function () {
 var Dojo_level = function () {
     this.level_name = null;
     this.level_value = null;
+    this.dojo_shortcuts = [];
 }
 
 function path(filename) {
@@ -106,7 +107,7 @@ app.get('/dojo/new', function (req, res) {
         var sl = new Dojo_level();
         sl.level_value = 1
         dojo.os = 'windows'
-        dojo.dojo_shortcuts.push(sc)
+        sl.dojo_shortcuts.push(sc)
         dojo.dojo_levels.push(sl)
         res.render(path('dojo_new'), {
             dojo: dojo,
