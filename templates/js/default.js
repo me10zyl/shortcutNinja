@@ -4,6 +4,7 @@ var ALT_KEY = '⎇';
 var SHIFT_KEY = '⇧';
 var SPLITER = '';
 var ENTER_KEY = '⏎'
+var BACKSPACE_KEY = '⌫'
 
 function change_os(os, callback) {
     if (os == 'macos') {
@@ -13,7 +14,9 @@ function change_os(os, callback) {
         SHIFT_KEY = '⇧';
         ENTER_KEY = '⏎'
         SPLITER = ''
+        BACKSPACE_KEY = '⌫'
     } else {
+        BACKSPACE_KEY = 'Backspace'
         CTRL_KEY = 'Ctrl';
         META_KEY = 'Windows';
         ALT_KEY = 'Alt';
@@ -53,6 +56,8 @@ $.prototype.bindkeys = function(callback){
                     real_key = '/';
                 case 'Enter':
                     real_key = ENTER_KEY;
+                case 'Backspace':
+                    real_key = BACKSPACE_KEY;
             }
             keys += SPLITER + real_key;
             keys = keys.substring(keys.indexOf(SPLITER) + SPLITER.length)
