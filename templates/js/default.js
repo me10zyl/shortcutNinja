@@ -3,6 +3,7 @@ var META_KEY = '⌘';
 var ALT_KEY = '⎇';
 var SHIFT_KEY = '⇧';
 var SPLITER = '';
+var ENTER_KEY = '⏎'
 
 function change_os(os, callback) {
     if (os == 'macos') {
@@ -10,13 +11,15 @@ function change_os(os, callback) {
         META_KEY = '⌘';
         ALT_KEY = '⎇';
         SHIFT_KEY = '⇧';
+        ENTER_KEY = '⏎'
         SPLITER = ''
     } else {
-        CTRL_KEY = 'Ctrl'
-        META_KEY = 'Windows'
-        ALT_KEY = 'Alt'
-        SHIFT_KEY = 'Shift'
-        SPLITER = '+'
+        CTRL_KEY = 'Ctrl';
+        META_KEY = 'Windows';
+        ALT_KEY = 'Alt';
+        SHIFT_KEY = 'Shift';
+        ENTER_KEY = 'Enter';
+        SPLITER = '+';
     }
     if(callback) {
         callback.call(this)
@@ -48,6 +51,8 @@ $.prototype.bindkeys = function(callback){
             switch(real_key){
                 case 'SLASH':
                     real_key = '/';
+                case 'Enter':
+                    real_key = ENTER_KEY;
             }
             keys += SPLITER + real_key;
             keys = keys.substring(keys.indexOf(SPLITER) + SPLITER.length)
