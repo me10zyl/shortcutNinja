@@ -43,9 +43,13 @@ $.prototype.bindkeys = function(callback){
         if (!(key == 'Meta' || key == 'Control' || key == 'Shift' || key == 'Alt')) {
             var real_key = code;
             if(/^Key/.test(code)){
-                real_key = key;
+                real_key = key.toUpperCase();
             }
-            keys += SPLITER + real_key.toUpperCase()
+            switch(real_key){
+                case 'SLASH':
+                    real_key = '/';
+            }
+            keys += SPLITER + real_key;
             keys = keys.substring(keys.indexOf(SPLITER) + SPLITER.length)
             callback.call(this, keys)
         }

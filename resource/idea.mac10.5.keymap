@@ -1,34 +1,34 @@
 ---------------
 CREATE AND EDIT
 ---------------
-Show Intention Actions ⌥⏎
-Basic Code Completion ⌃Space
-Smart Code Completion ⌃⇧Space
-Type Name Completion ⌃⌥Space
-Complete Statement ⇧⌘⏎
-Parameter Information ⌘P
-Quick Definition ⌥Space
-Quick/External Documentation F1
-Generate Code ⌘N
-Override/Implement Members ⌃O
-Surround With... ⌥⌘T
-Comment with Line/Block Comment ⌘/
-Extend/Shrink Selection ⌥↑
-Context Info ⌃⇧Q
-Optimize Imports ⌃⌥O
-Auto-Indent Lines ⌃⌥I
-Cut/Copy/Paste ⌘X
-Copy Document Path ⇧⌘C
-Paste from Clipboard History ⇧⌘V
-Duplicate Current Line or Selection ⌘D
-Move Line Up/Down ⇧⌘↑
-Delete Line at Caret ⌘⌫
-Join/Split Line ⌃⇧J
-Start New Line ⇧⏎
-Toggle Case ⇧⌘U
-Expand/Collapse Code Block ⌘ / ⌘-
-Expand/Collapse All ⌘ / ⌘-
-Save All ⌘S
+⌥⏎ Show Intention Actions
+⌃Space Basic Code Completion
+⌃⇧Space Smart Code Completion
+⌃⌥Space Type Name Completion
+⇧⌘⏎ Complete Statement
+⌘P Parameter Information
+⌥Space Quick Definition
+F1 Quick/External Documentation
+⌘N Generate Code
+⌃O Override/Implement Members
+⌥⌘T Surround With...
+⌘/ Comment with Line/Block Comment
+⌥↑ Extend/Shrink Selection
+⌃⇧Q Context Info
+⌃⌥O Optimize Imports
+⌃⌥I Auto-Indent Lines
+⌘X Cut/Copy/Paste
+⇧⌘C Copy Document Path
+⇧⌘V Paste from Clipboard History
+⌘D Duplicate Current Line or Selection
+⇧⌘↑ Move Line Up/Down
+⌘⌫ Delete Line at Caret
+⌃⇧J Join/Split Line
+⇧⏎ Start New Line
+⇧⌘U Toggle Case
+⌘ / ⌘- Expand/Collapse Code Block
+⌘ / ⌘- Expand/Collapse All
+⌘S Save All
 -------------------
 ANALYZE AND EXPLORE
 -------------------

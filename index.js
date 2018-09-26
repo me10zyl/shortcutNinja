@@ -162,13 +162,13 @@ app.post('/dojo/new/upload', upload.single('scs'), function (req, res, next) {
             }else{
                 var s = new Dojo_shortcut();
                 let strings = split.split(" ");
-                s.shortcut_key = strings[strings.length - 1]
+                s.shortcut_key = strings[0]
                 if(s.shortcut_key == ""){
                     continue
                 }
                 s.shortcut_desc = ""
                 for(var i in strings){
-                    if(i < strings.length - 1) {
+                    if(i != 0) {
                         s.shortcut_desc += strings[i] + " "
                     }
                 }
