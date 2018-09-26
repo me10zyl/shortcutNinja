@@ -2,11 +2,15 @@
 var express = require('express');
 var app = express();
 var sqlhelper = require('./sqlhepler')
+var multer  = require('multer')
+var fs = require('fs')
 
 app.set('view engine', 'pug')
 app.use(express.static('templates'));
 app.use(express.json());       // to support JSON-encoded bodies
 app.use(express.urlencoded()); // to support URL-encoded bodies
+
+var upload = multer({ dest: 'uploads/' })
 
 BASE_DIR = __dirname + "/templates"
 
@@ -18,7 +22,6 @@ var Ret = function () {
 
 var Dojo = function () {
     this.dojo_name = null;
-    this.dojo_shortcuts = [];
     this.dojo_levels = []
 }
 
@@ -125,6 +128,59 @@ app.post('/dojo/new', function (req, res) {
         sqlhelper.run("insert into dojos (data) values(?)", [JSON.stringify(dojo)])
     }
     res.end(JSON.stringify(new Ret()))
+})
+
+
+app.post('/dojo/new/upload', upload.single('scs'), function (req, res, next) {
+    // req.file is the `avatar` file
+    // req.body will hold the text fields, if there were any
+
+    fs.readFile(req.file.path, function (err, data) {
+        if(err){
+            return res.json({
+                msg : err
+            })
+
+        }
+        var splits = data.toString().split(/\r?\n/ig)
+        var dojo_levels = []
+        var start = false;
+        var level = null;
+        var end = false;
+        for(var i in splits){
+            var split = splits[i]
+            if(end){
+                end = false;
+                start = false;
+            }else if(start){
+                level = new Dojo_level();
+                dojo_levels.push(level)
+                level.level_name = split;
+                end = true;
+            }else if(/^---/.test(split)){
+                start = true;
+            }else{
+                var s = new Dojo_shortcut();
+                let strings = split.split(" ");
+                s.shortcut_key = strings[strings.length - 1]
+                if(s.shortcut_key == ""){
+                    continue
+                }
+                s.shortcut_desc = ""
+                for(var i in strings){
+                    if(i < strings.length - 1) {
+                        s.shortcut_desc += strings[i] + " "
+                    }
+                }
+                s.shortcut_desc = s.shortcut_desc.trim()
+                level.dojo_shortcuts.push(s)
+            }
+        }
+        res.json({
+            msg : "成功",
+            data : dojo_levels
+        })
+    });
 })
 
 app.post('/dojo/delete', function (req, res) {
